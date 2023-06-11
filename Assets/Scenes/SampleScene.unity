@@ -693,10 +693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceModels: []
-  ContainerHolder: {fileID: 30211852}
-  TargetPosition: {x: 0, y: 0, z: 0}
-  _resourceFlyDuration: 1
-  _resourceFollowDuration: 0.1
+  _containerHolder: {fileID: 30211852}
   _resourceFlyCurve:
     serializedVersion: 2
     m_Curve:
@@ -721,6 +718,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _resourceFlyDuration: 0.1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
