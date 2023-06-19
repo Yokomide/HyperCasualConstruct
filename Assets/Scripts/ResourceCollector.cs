@@ -22,19 +22,35 @@ public class ResourceCollector : MonoBehaviour, ICollector
     {
         _resourceStorage.AddValue(amount, resource);
     }
-
+    public void RemoveResource(int amount, ResourceType resource)
+    {
+        _resourceStorage.RemoveValue(amount, resource);
+    }
     public void StartCollectAnimation()
     {
-        _animator.SetBool("isDancing", true);
+        _animator.SetBool("isFarming", true);
     }
 
     public void EndCollectAnimation()
     {
-        _animator.SetBool("isDancing", false);
+        _animator.SetBool("isFarming", false);
     }
 
     public void PlayOneShotCollectAnimation()
     {
         // _animator.Play("");
+    }
+
+    public void StartSpendAnimation()
+    {
+        _animator.SetBool("isSpending", true);
+
+    }
+
+    public void EndSpendAnimation()
+    {
+        _animator.SetBool("isSpending", false);
+
+
     }
 }

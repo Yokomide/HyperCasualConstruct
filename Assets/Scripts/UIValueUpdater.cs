@@ -1,19 +1,8 @@
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-[ShowOdinSerializedPropertiesInInspector]
-public class UIValueUpdater : MonoBehaviour, ISerializationCallbackReceiver, ISupportsPrefabSerialization
-{
-    [SerializeField, HideInInspector]
-    private SerializationData serializationData;
+public class UIValueUpdater : MonoBehaviour {
 
-    SerializationData ISupportsPrefabSerialization.SerializationData { get { return this.serializationData; } set { this.serializationData = value; } }
-
-    //[SerializeField] private IStorage _storage;
     [SerializeField] private ResourceStorage _resourceStorage;
 
     [SerializeField] private ResourceType _resourceType;
@@ -56,15 +45,5 @@ public class UIValueUpdater : MonoBehaviour, ISerializationCallbackReceiver, ISu
                 _text.text = _resourceStorage.WoodAmount.ToString();
                 break;
         }
-    }
-
-    public void OnAfterDeserialize()
-    {
-        UnitySerializationUtility.DeserializeUnityObject(this, ref this.serializationData);
-    }
-
-    public void OnBeforeSerialize()
-    {
-        UnitySerializationUtility.SerializeUnityObject(this, ref this.serializationData);
     }
 }

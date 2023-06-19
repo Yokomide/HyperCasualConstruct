@@ -68,7 +68,7 @@ public class ResourceFarmer : MonoBehaviour
         if (LimitCapacity && _resourceAmount < _amountPerTick)
             return;
         _isFarmingActive = true;
-        StartFarmResource(collector, other.gameObject);
+        StartFarming(collector, other.gameObject);
 
         if (CollectAnimation)
             collector.StartCollectAnimation();
@@ -124,7 +124,7 @@ public class ResourceFarmer : MonoBehaviour
         }
     }
 
-    private void StartFarmResource(ICollector collector, GameObject interactor)
+    private void StartFarming(ICollector collector, GameObject interactor)
     {
         if (_isFarmingActive)
         {
@@ -133,7 +133,7 @@ public class ResourceFarmer : MonoBehaviour
             {
                 SetCollectorResource(collector, interactor);
                 ResetFill();
-                StartFarmResource(collector, interactor);
+                StartFarming(collector, interactor);
             }));
         }
     }
@@ -146,20 +146,13 @@ public class ResourceFarmer : MonoBehaviour
             .Join(resourceVisual.gameObject.transform.DOScale(30f, 0.8f))
             .Append(resourceVisual.gameObject.transform.DOScale(0f, 0.3f))
             .OnComplete(() => Destroy(resourceVisual));
-
-        //resourceVisual.transform.position = new Vector3(resourceVisual.gameObject.transform.position.x, resourceVisual.gameObject.transform.position.y + 2, resourceVisual.gameObject.transform.position.z);
-        //resourceVisual.gameObject.transform.DOScale(30f, 0.3f);
-        //Vector3 spawnPos = resourceVisual.GetComponent<RectTransform>().anchoredPosition;
-       // resourceVisual.transform.parent = _uiNewTransform.transform;
-       // resourceVisual.GetComponent<RectTransform>().anchoredPosition = cam.WorldToScreenPoint(spawnPos);
-       // resourceVisual.gameObject.GetComponent<RectTransform>().DOAnchorPos(_uiResourceTransform.GetComponent<RectTransform>().anchoredPosition, 5f);
     }
 
     private void SpawnResourceModel(ResourceContainer3D resourceContainer3D)
     {
         var resource3D = Instantiate(_resourceModel, gameObject.transform.position, Quaternion.identity);
-        //resource3D.transform.localScale = new Vector3(0,0,0);
-      // resource3D.transform.DOScale(1, 0.1f);
+        resource3D.transform.localScale = new Vector3(0,0,0);
+        resource3D.transform.DOScale(1, 0.1f);
         resourceContainer3D.Add(resource3D);
         
 
