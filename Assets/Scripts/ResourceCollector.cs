@@ -26,14 +26,28 @@ public class ResourceCollector : MonoBehaviour, ICollector
     {
         _resourceStorage.RemoveValue(amount, resource);
     }
-    public void StartCollectAnimation()
+    public void StartAnimation(CharacterAnimationType characterAnimationType)
     {
-        _animator.SetBool("isFarming", true);
+        switch(characterAnimationType)
+        {
+            case CharacterAnimationType.Dance_1:
+                _animator.SetBool("isDancing_1", true);
+                break;
+            case CharacterAnimationType.Dance_2:
+                _animator.SetBool("isDancing_2", true);
+                break;
+            case CharacterAnimationType.Mine:
+                _animator.SetBool("isMining", true);
+                break;
+        }
     }
 
-    public void EndCollectAnimation()
+    public void EndAnimation()
     {
-        _animator.SetBool("isFarming", false);
+        _animator.SetBool("isDancing_1", false);
+        _animator.SetBool("isDancing_2", false);
+        _animator.SetBool("isMining", false);
+
     }
 
     public void PlayOneShotCollectAnimation()
@@ -41,16 +55,9 @@ public class ResourceCollector : MonoBehaviour, ICollector
         // _animator.Play("");
     }
 
-    public void StartSpendAnimation()
+
+    public int GetResourceAmount(ResourceType resourceType)
     {
-        _animator.SetBool("isSpending", true);
-
-    }
-
-    public void EndSpendAnimation()
-    {
-        _animator.SetBool("isSpending", false);
-
-
+        return _resourceStorage.GetAmount(resourceType);
     }
 }

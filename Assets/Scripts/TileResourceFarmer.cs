@@ -1,12 +1,8 @@
-using System.Collections.ObjectModel;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using DG;
 using DG.Tweening;
 using Sirenix.OdinInspector;
-public class ResourceFarmer : MonoBehaviour
+public class TileResourceFarmer : MonoBehaviour
 {
     [Header("====Resource Settings====")]
     [SerializeField] private ResourceType _resourceType;
@@ -28,11 +24,11 @@ public class ResourceFarmer : MonoBehaviour
 
     [Header("====Animation====")]
     [SerializeField] private bool CollectAnimation;
+    [SerializeField] private CharacterAnimationType _characterAnimationType;
     [Space(10)]
 
     [Header("====Visual====")]
-    [OnValueChanged("ChangeFillColor")]
-    [SerializeField] private Color _fillColor;
+    [SerializeField, OnValueChanged("ChangeFillColor")] private Color _fillColor;
     [SerializeField] private Image _fillImage;
 
     [SerializeField] private bool UseResourceModel;
@@ -44,8 +40,6 @@ public class ResourceFarmer : MonoBehaviour
     [SerializeField, ConditionalHide("ResourceToUIAnim", true)] private GameObject _uiNewTransform;
 
     [SerializeField] private Camera cam;
-
-
 
     private Sequence _farmSequence;
     private Sequence _resourceSequence;
@@ -71,7 +65,7 @@ public class ResourceFarmer : MonoBehaviour
         StartFarming(collector, other.gameObject);
 
         if (CollectAnimation)
-            collector.StartCollectAnimation();
+            collector.StartAnimation(_characterAnimationType);
     }
 
     private void OnTriggerExit(Collider other)
@@ -80,15 +74,28 @@ public class ResourceFarmer : MonoBehaviour
             return;
         StopFarming(collector);
     }
-
+    private void StartFarming(ICollector collector, GameObject interactor)
+    {
+        if (_isFarmingActive)
+        {
+            _farmSequence = DOTween.Sequence();
+            _farmSequence.Append(_fillImage.DOFillAmount(1, _farmSpeed).OnComplete(() =>
+            {
+                SetCollectorResource(collector, interactor);
+                ResetFill();
+                StartFarming(collector, interactor);
+            }));
+        }
+    }
     private void StopFarming(ICollector collector)
     {
         _isFarmingActive = false;
         _farmSequence.Kill();
-        _fillImage.DOFillAmount(0, _farmCancelSpeed);
+
+            _fillImage.DOFillAmount(0, _farmCancelSpeed);
 
         if (CollectAnimation)
-            collector.EndCollectAnimation();
+            collector.EndAnimation();
     }
 
     private void SetCollectorResource(ICollector collector, GameObject interactor)
@@ -124,19 +131,6 @@ public class ResourceFarmer : MonoBehaviour
         }
     }
 
-    private void StartFarming(ICollector collector, GameObject interactor)
-    {
-        if (_isFarmingActive)
-        {
-            _farmSequence = DOTween.Sequence();
-            _farmSequence.Append(_fillImage.DOFillAmount(1, _farmSpeed).OnComplete(() =>
-            {
-                SetCollectorResource(collector, interactor);
-                ResetFill();
-                StartFarming(collector, interactor);
-            }));
-        }
-    }
     private void SpawnResourceVisual()
     {
         var resourceVisual = Instantiate(_resourceVisual, gameObject.transform);

@@ -2,16 +2,15 @@ using UnityEngine;
 
 internal interface ICollector
 {
+    public int GetResourceAmount(ResourceType resourceType);
     public void AddResource(int amount, ResourceType resource);
     public void RemoveResource(int amount, ResourceType resource);
     public void AddItem(int amount, string type);
 
     public void PlayOneShotCollectAnimation();
 
-    public void StartCollectAnimation();
-    public void EndCollectAnimation();
+    public void StartAnimation(CharacterAnimationType characterAnimationType);
+    public void EndAnimation();
 
-    public void StartSpendAnimation();
-    public void EndSpendAnimation();
 
 }

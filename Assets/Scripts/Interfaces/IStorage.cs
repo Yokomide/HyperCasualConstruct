@@ -8,5 +8,5 @@ internal interface IStorage
 
     public void RemoveValue(int value, ResourceType type);
 
-    public void ResetValue();
+    public void ResetValue(ResourceType type);
 }

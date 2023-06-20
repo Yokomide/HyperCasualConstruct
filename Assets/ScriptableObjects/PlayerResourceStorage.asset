@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00883de10da5e944dad05433298431d1, type: 3}
   m_Name: PlayerResourceStorage
   m_EditorClassIdentifier: 
-  _goldAmount: 0
-  _woodAmount: 0
-  _blueDiamondAmount: 0
-  _redDiamondAmount: 0
+  _goldAmount: 441
+  _woodAmount: 500
+  _blueDiamondAmount: 490
+  _redDiamondAmount: 500
