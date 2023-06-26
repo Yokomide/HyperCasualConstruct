@@ -9,19 +9,21 @@ using UnityEngine;
 public class UpgradeTarget : MonoBehaviour
 {
     [SerializeField] bool _shouldDisappear;
-    [SerializeField] private GameObject _eventActivatorHolder;
     [SerializeField] private ResourceSpender _resourceSpender;
-    [SerializeField] private TweenAnimationContoller _tweenAnimationContoller;
     [SerializeField] private MeshFilter _meshFilter;
     [SerializeField] private List<GameObject> UpgradedObjects = new List<GameObject>();
-
-   // [SerializeField] private List<Mesh> meshes = new List<Mesh> ();
+    private TweenAnimationContoller _tweenAnimationContoller;
+    // [SerializeField] private List<Mesh> meshes = new List<Mesh> ();
     private int updatesAmount;
     private bool _appearAnimationActive = true;
     [SerializeField] private int currentUpdateNumber;
+
+    private GameObject _eventActivatorHolder;
     private IEventActivator _eventActivator;
 
-    public List<ResourceStorage> resourceRequirments = new List<ResourceStorage> ();
+    //public List<ResourceStorage> resourceRequirments = new List<ResourceStorage> ();
+    public List<RequiredResourcesData> resourceRequirments = new List<RequiredResourcesData>();
+
 
     private void OnEnable()
     {
@@ -35,7 +37,9 @@ public class UpgradeTarget : MonoBehaviour
     }
     private void Awake()
     {
-        if (_eventActivatorHolder.TryGetComponent(out IEventActivator eventActivator))
+        _tweenAnimationContoller = GetComponent<TweenAnimationContoller>();
+
+        if (_resourceSpender.TryGetComponent(out IEventActivator eventActivator))
         {
             _eventActivator = eventActivator;
         }
@@ -46,8 +50,15 @@ public class UpgradeTarget : MonoBehaviour
     }
     private void Start()
     {
-        _resourceSpender.UpdateRequirments(resourceRequirments[currentUpdateNumber]);
+        if (currentUpdateNumber >= 0)
+        {
+            _resourceSpender.UpdateRequirments(resourceRequirments[currentUpdateNumber]);
             UpgradedObjects[currentUpdateNumber].SetActive(true);
+        }
+        else
+        {
+            _resourceSpender.UpdateRequirments(resourceRequirments[0]);
+        }
 
     }
     private void Upgrade()
@@ -60,10 +71,13 @@ public class UpgradeTarget : MonoBehaviour
             _appearAnimationActive = false;
         }
         AppearAnimation();
-        _resourceSpender.ResetResourceAmount();
-        _resourceSpender.UnlockSpend();
-        if (currentUpdateNumber >= UpgradedObjects.Count)
+        if(currentUpdateNumber>= UpgradedObjects.Count)
+        {
+            _resourceSpender.ClearDictionaries();
+            _resourceSpender.LockSpend();
             return;
+        }
+        // _resourceSpender.UnlockSpend();
         _appearAnimationActive = true;
         // _eventActivatorHolder.GetComponent<ResourceSpender>().UnlockSpend();
     }
@@ -73,7 +87,11 @@ public class UpgradeTarget : MonoBehaviour
         if (currentUpdateNumber < resourceRequirments.Count)
             _resourceSpender.UpdateRequirments(resourceRequirments[currentUpdateNumber]);
         else
-            _resourceSpender._resourceRequirements = null;
+        {
+            //_resourceSpender._requiredResources = null;
+            _resourceSpender.ClearDictionaries();
+            _resourceSpender.LockSpend();
+        }
 
         //_resourceSpender._resourceRequired = UpdateParameters[currentUpdateNumber].ResourceAmount[0];
 

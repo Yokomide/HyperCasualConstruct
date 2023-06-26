@@ -10,6 +10,8 @@ internal interface ICollector
     public void PlayOneShotCollectAnimation();
 
     public void StartAnimation(CharacterAnimationType characterAnimationType);
+    public void StartAnimation(CharacterAnimationType characterAnimationType, float speed);
+
     public void EndAnimation();
 
 

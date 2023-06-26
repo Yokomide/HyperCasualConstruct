@@ -9,9 +9,7 @@ public class AnimationResourceFarmer : MonoBehaviour
     [Space(10)]
 
     [Header("====Farm Settings====")]
-    [SerializeField] private float _farmDelay;
     [SerializeField] private float _farmSpeed;
-    [SerializeField] private float _farmCancelSpeed;
     [SerializeField] private int _amountPerTick;
     [Space(10)]
 
@@ -26,6 +24,7 @@ public class AnimationResourceFarmer : MonoBehaviour
     [SerializeField] private CharacterAnimationType _characterAnimationType;
     [SerializeField] private Transform _target;
     [SerializeField] private bool _lookAtTarget;
+    private Animator _animator; 
     [Space(10)]
 
     [Header("====Visual====")]
@@ -51,6 +50,7 @@ public class AnimationResourceFarmer : MonoBehaviour
 
     private void Start()
     {
+        _animator = GetComponent<Animator>();
         if (_startAmountEqualCapacity)
         {
             _resourceAmount = _capacity;
@@ -89,7 +89,7 @@ public class AnimationResourceFarmer : MonoBehaviour
             return;
         }
 
-        _collector.StartAnimation(_characterAnimationType);
+        _collector.StartAnimation(_characterAnimationType, _farmSpeed);
 
             
     }
@@ -111,6 +111,7 @@ public class AnimationResourceFarmer : MonoBehaviour
     {
         _vfx.SetActive(false);
         _vfx.SetActive(true);
+       
         if (LimitCapacity)
         {
             if (_resourceAmount >= _amountPerTick)

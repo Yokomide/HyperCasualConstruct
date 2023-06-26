@@ -41,12 +41,28 @@ public class ResourceCollector : MonoBehaviour, ICollector
                 break;
         }
     }
-
+    public void StartAnimation(CharacterAnimationType characterAnimationType, float speed)
+    {
+        switch (characterAnimationType)
+        {
+            case CharacterAnimationType.Dance_1:
+                _animator.SetBool("isDancing_1", true);
+                break;
+            case CharacterAnimationType.Dance_2:
+                _animator.SetBool("isDancing_2", true);
+                break;
+            case CharacterAnimationType.Mine:
+                _animator.SetBool("isMining", true);
+                break;
+        }
+        _animator.SetFloat("Speed", speed);
+    }
     public void EndAnimation()
     {
         _animator.SetBool("isDancing_1", false);
         _animator.SetBool("isDancing_2", false);
         _animator.SetBool("isMining", false);
+        _animator.SetFloat("Speed", 1);
 
     }
 
@@ -60,4 +76,5 @@ public class ResourceCollector : MonoBehaviour, ICollector
     {
         return _resourceStorage.GetAmount(resourceType);
     }
+
 }
