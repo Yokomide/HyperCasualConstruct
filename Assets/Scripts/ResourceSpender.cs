@@ -77,6 +77,7 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     {
         if (!other.TryGetComponent(out ICollector collector))
             return;
+        OnEventActivate?.Invoke();
         StopSpending(collector);
     }
     public void UpdateRequirments(/*ResourceStorage resourceRequirments,*/ RequiredResourcesData requiredResourcesData)
@@ -90,7 +91,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
             resourceStorage.Add(requirement.type, 0);
 
             _fillMaxAmount += requirement.amount;
-            Debug.Log(_fillMaxAmount);
             var requirementUI = Instantiate(_UIPrefab, _UIHolder);
             requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
             requireVisual.Add(requirement.type, requirementUI);

@@ -9,9 +9,10 @@ public class ResourceContainer3D : MonoBehaviour
     [SerializeField] private Transform _containerHolder;
     [SerializeField] float _resourceFlyDuration;
     [SerializeField] float _speedBoostPerTick;
+    [SerializeField] float _spaceBetweenObjects;
 
     private Vector3 CalculateResourcePosition(GameObject resource) =>
-        _containerHolder.position + new Vector3(0, 0.1f * resourceModels.IndexOf(resource), 0);
+        _containerHolder.position + new Vector3(0, _spaceBetweenObjects * resourceModels.IndexOf(resource), 0);
     public void Add(GameObject resource)
     {
 
@@ -52,7 +53,7 @@ public class ResourceContainer3D : MonoBehaviour
                
             });
         
-        resource.transform.DORotate(new Vector3(-90, 0, 0), 1f);
+       // resource.transform.DORotate(new Vector3(-90, 0, 0), 1f);
     }
 
     public void Remove(GameObject resource)

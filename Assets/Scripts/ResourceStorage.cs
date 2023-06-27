@@ -6,7 +6,9 @@ using static UnityEngine.Rendering.DebugUI;
 public class ResourceStorage : ScriptableObject, IStorage
 {
     [SerializeField] private int _goldAmount;
-    [SerializeField] private int _woodAmount;
+    [SerializeField] private int _burgerAmount;
+    [SerializeField] private int _bunAmount;
+
     [SerializeField] private int _blueDiamondAmount;
     [SerializeField] private int _redDiamondAmount;
 
@@ -28,10 +30,15 @@ public class ResourceStorage : ScriptableObject, IStorage
         set { _redDiamondAmount = value; }
     }
 
-    public int WoodAmount
+    public int BurgerAmount
     {
-        get { return _woodAmount; }
-        set { _woodAmount = value; }
+        get { return _burgerAmount; }
+        set { _burgerAmount = value; }
+    }
+    public int BunAmount
+    {
+        get { return _bunAmount; }
+        set { _bunAmount = value; }
     }
 
     public event Action OnValueChanged;
@@ -49,9 +56,11 @@ public class ResourceStorage : ScriptableObject, IStorage
             case ResourceType.RedDiamond:
                 return RedDiamondAmount;
 
-            case ResourceType.Wood:
-                return WoodAmount;
+            case ResourceType.Burger:
+                return BurgerAmount;
 
+            case ResourceType.Bun:
+                return BunAmount;
             default: return 0;
         }
     }
@@ -71,8 +80,12 @@ public class ResourceStorage : ScriptableObject, IStorage
                 RedDiamondAmount += value;
                 break;
 
-            case ResourceType.Wood:
-                WoodAmount += value;
+            case ResourceType.Burger:
+                BurgerAmount += value;
+                break;
+
+            case ResourceType.Bun:
+                BunAmount += value;
                 break;
 
             default: break;
@@ -96,8 +109,12 @@ public class ResourceStorage : ScriptableObject, IStorage
                 RedDiamondAmount -= value;
                 break;
 
-            case ResourceType.Wood:
-                WoodAmount -= value;
+            case ResourceType.Burger:
+                BurgerAmount -= value;
+                break;
+
+            case ResourceType.Bun:
+                BunAmount -= value;
                 break;
 
             default: break;
@@ -121,8 +138,12 @@ public class ResourceStorage : ScriptableObject, IStorage
                 RedDiamondAmount = 0;
                 break;
 
-            case ResourceType.Wood:
-                WoodAmount = 0;
+            case ResourceType.Burger:
+                BurgerAmount = 0;
+                break;
+
+            case ResourceType.Bun:
+                BunAmount = 0;
                 break;
 
             default: break;
@@ -131,14 +152,15 @@ public class ResourceStorage : ScriptableObject, IStorage
     }
     public int GetAllValuesSum()
     {
-        return GoldAmount + BlueDiamondAmount + RedDiamondAmount + WoodAmount;
+        return GoldAmount + BlueDiamondAmount + RedDiamondAmount + BurgerAmount + BunAmount;
     }
     public void ResetAllValues()
     {
         GoldAmount = 0;
         BlueDiamondAmount = 0;
         RedDiamondAmount = 0;
-        WoodAmount = 0;
+        BurgerAmount = 0;
+        BunAmount = 0;
         OnValueChanged?.Invoke();
 
     }

@@ -3,5 +3,8 @@ public enum ResourceType
     Gold,
     BlueDiamond,
     RedDiamond,
-    Wood
+    Burger,
+    Drink,
+    Bun,
+    Cutlet
 }
