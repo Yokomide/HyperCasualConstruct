@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayerResourceStorage
   m_EditorClassIdentifier: 
   _goldAmount: 0
-  _woodAmount: 500
-  _blueDiamondAmount: 30
-  _redDiamondAmount: 40
+  _woodAmount: 0
+  _blueDiamondAmount: 2
+  _redDiamondAmount: 0

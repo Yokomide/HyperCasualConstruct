@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.24705882}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6862745}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -91,17 +91,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c69a3a2a42912428390db8f659d0f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  _resourceStorage: {fileID: 0}
   _resourceType: 0
+  _resourceStorage: {fileID: 0}
   _text: {fileID: 7623654257056242183}
 --- !u!1 &4207343033478114929
 GameObject:
@@ -250,6 +241,7 @@ GameObject:
   - component: {fileID: 6478371301547347502}
   - component: {fileID: 9096021693258571834}
   - component: {fileID: 8052586622263879358}
+  - component: {fileID: 5253873696464275478}
   m_Layer: 5
   m_Name: Coin
   m_TagString: Untagged
@@ -274,8 +266,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 96, y: 100}
+  m_AnchoredPosition: {x: -34.8, y: -23.5}
+  m_SizeDelta: {x: 54.3416, y: 52.1765}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &9096021693258571834
 CanvasRenderer:
@@ -315,3 +307,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5253873696464275478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7542451717479107653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 2, y: 2}
+  m_UseGraphicAlpha: 1

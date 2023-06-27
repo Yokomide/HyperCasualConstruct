@@ -121,10 +121,17 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
             _spendSequence.Append(resourceModel.transform.DOJump(transform.position, _spendJumpPower, 1, _spendDuration)
                 .OnComplete(() =>
             {
+<<<<<<< Updated upstream
                 Destroy(resourceModel);
                 collector.RemoveResource(_amountPerTick, _resourceType);
 
             AddToStorage(_amountPerTick, ResourceType.Gold);
+=======
+
+                Destroy(resourceModel);
+                collector.RemoveResource(_amountPerTick, ResourceType.Gold);
+                AddToStorage(_amountPerTick, ResourceType.Gold);
+>>>>>>> Stashed changes
                 /*
             if (_resourceStorage.GetAmount(ResourceType.Gold) >= _resourceRequirements.GetAmount(ResourceType.Gold))
             {
@@ -135,7 +142,7 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
                 return;
             }
                 */
-            //StartSpending(collector, interactor);
+                //StartSpending(collector, interactor);
 
             }));
 
