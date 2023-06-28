@@ -23,7 +23,7 @@ public class CarSystem : MonoBehaviour
 
     [SerializeField] private int _difficulty;
 
-    private bool _isOrderActive;
+    private Vector3 _startScale;
 
     [Serializable]
     public class Orders
@@ -48,6 +48,7 @@ public class CarSystem : MonoBehaviour
         var car = cars[Random.Range(0, cars.Count - 1)];
         car.SetActive(true);
         _currentCar = car;
+        _startScale = _currentCar.transform.localScale;
         MoveToOrderPosition();
     }
 
@@ -76,12 +77,22 @@ public class CarSystem : MonoBehaviour
     {
         int listDifficulty = Random.Range(0, _difficulty+1);
         Debug.Log(listDifficulty);
+        _resourceSpender.resourceTarget = _currentCar.transform;
+        _resourceSpender.startResourceTargetScale = _startScale;
         _resourceSpender.UpdateRequirments(ordersContainer[listDifficulty].orders[Random.Range(0, ordersContainer[listDifficulty].orders.Count)]);
     }
 
     public void CompleteOrder()
     {
-        MoveToEndPosition();
-        _resourceSpender.ClearDictionaries();
+       // Sequence complete = DOTween.Sequence();
+       // var startScale = _currentCar.transform.localScale;
+       // complete.Append(_currentCar.transform.DOScale(_currentCar.transform.localScale * 1.5f, 0.2f))
+       //     .Append(_currentCar.transform.DOScale(startScale, 0.2f))
+        //    .OnComplete(() =>
+        //    {
+                MoveToEndPosition();
+                _resourceSpender.ClearDictionaries();
+         //   } 
+         //   );
     }
 }

@@ -1,5 +1,6 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-
 [CreateAssetMenu(fileName = "New Building Data", menuName = "Building Data")]
 public class RequiredResourcesData : ScriptableObject
 {
@@ -9,6 +10,5 @@ public class RequiredResourcesData : ScriptableObject
         public ResourceType type;
         public int amount;
     }
-
-    public ResourceRequirement[] requiredResources;
+    public List<ResourceRequirement> requiredResources = new List<ResourceRequirement>();
 }

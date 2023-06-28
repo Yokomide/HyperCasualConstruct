@@ -15,5 +15,5 @@ MonoBehaviour:
   requiredResources:
   - type: 3
     amount: 2
-  - type: 1
-    amount: 1
+  - type: 0
+    amount: 3

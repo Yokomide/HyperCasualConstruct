@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Lofelt.NiceVibrations;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -6,14 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static RequiredResourcesData;
 using Sequence = DG.Tweening.Sequence;
+using Vector3 = UnityEngine.Vector3;
 
 public class ResourceSpender : MonoBehaviour, IEventActivator
 {
     [Header("====Resource Settings====")]
-    [SerializeField] private ResourceType _resourceType;
-    [SerializeField] public RequiredResourcesData  _requiredResources;
+    [SerializeField] public RequiredResourcesData _requiredResources;
 
 
     [Space(10)]
@@ -42,49 +42,65 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     [SerializeField] private Image _fillImage;
     [SerializeField] private Transform _UIHolder;
     [SerializeField] private GameObject _UIPrefab;
+    [SerializeField] public Transform resourceTarget;
 
     [HideInInspector] public event Action OnEventActivate;
+
+    [Header("====Feelings====")]
+    public HapticClip haptic;
+
+
+    [HideInInspector] public Vector3 startResourceTargetScale;
 
     private Dictionary<ResourceType, int> resourceStorage = new Dictionary<ResourceType, int>();
 
     private Dictionary<ResourceType, GameObject> requireVisual = new Dictionary<ResourceType, GameObject>();
 
+    private List<Resource3D> containerRequiredResources = new List<Resource3D>();
+
+    private ICollector _collector;
     private ResourceContainer3D _container3D;
-    private Sequence _spendSequence;
 
     private float _fillMaxAmount;
     private float _fillOnePercent;
 
     private bool _isSpendingActive;
 
+    private Coroutine spending3DCoroutine;
     private void OnTriggerEnter(Collider other)
     {
         if (_isSpendingLocked)
             return;
- 
+        if (_requiredResources == null)
+            return;
         if (!other.TryGetComponent(out ICollector collector))
             return;
+        _collector = collector;
         _isSpendingActive = true;
         if (SpendAnimation)
             collector.StartAnimation(_characterAnimationType, _animationSpeed);
         if (_suckResource3D)
+        {
             _container3D = other.GetComponent<ResourceContainer3D>();
-        StartCoroutine(StartSpendingWithDelay(collector, other.gameObject));
-        // StartSpending(collector, other.gameObject);
+            spending3DCoroutine = StartCoroutine(StartSpending3D());
+            return;
+        }
+        StartCoroutine(StartSpendingWithDelay());
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.TryGetComponent(out ICollector collector))
+        if (_collector == null)
+        {
             return;
-        OnEventActivate?.Invoke();
-        StopSpending(collector);
+        }
+        if (other.TryGetComponent(out ICollector collector))
+            return;
+        StopSpending();
     }
-    public void UpdateRequirments(/*ResourceStorage resourceRequirments,*/ RequiredResourcesData requiredResourcesData)
+    public void UpdateRequirments(RequiredResourcesData requiredResourcesData)
     {
-        //_resourceRequirements = resourceRequirments;
         ClearDictionaries();
-
         _requiredResources = requiredResourcesData;
         foreach (RequiredResourcesData.ResourceRequirement requirement in requiredResourcesData.requiredResources)
         {
@@ -95,82 +111,105 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
             requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
             requireVisual.Add(requirement.type, requirementUI);
         }
-       _fillOnePercent = 1 / _fillMaxAmount;
+        _fillOnePercent = 1 / _fillMaxAmount;
         _fillMaxAmount = 0;
 
     }
-    private void StartSpending(ICollector collector, GameObject interactor)
+
+    IEnumerator StartSpending3D()
+    {
+        if (_isSpendingLocked)
+            yield break;
+        if (!_isSpendingActive)
+            yield break;
+        if (_container3D.resourceAmount <= 0)
+        {
+            StopSpending();
+            yield break;
+        }
+        foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
+        {
+            for (int i = 0; i < _container3D.resourceAmount; i++)
+            {
+
+                if (_container3D.resources[i].Type == requirement.type && resourceStorage[requirement.type] < requirement.amount)
+                {
+
+                    containerRequiredResources.Add(_container3D.resources[i]);
+
+                }
+                else if (i == _container3D.resourceAmount - 1 && containerRequiredResources.Count <= 0)
+                {
+                    if (_requiredResources.requiredResources.IndexOf(requirement) == _requiredResources.requiredResources.Count - 1)
+                    {
+                        yield break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+            }
+            for (int i = containerRequiredResources.Count - 1; i >= 0; i--)
+            {
+                if (resourceStorage[requirement.type] >= requirement.amount)
+                {
+                    containerRequiredResources.Clear();
+                    break;
+
+                }
+                var targetStartScale = resourceTarget.localScale;
+                var spendSequence = DOTween.Sequence();
+                spendSequence.SetAutoKill(false);
+                Resource3D resource = containerRequiredResources[i];
+                spendSequence.Append(resource.transform.DOJump(resourceTarget.position, _spendJumpPower, 1, _spendDuration)
+                    .OnComplete(() =>
+                    {
+                        _collector.RemoveResource(_amountPerTick, requirement.type);
+                        AddToStorage(_amountPerTick, requirement.type);
+
+                    }));
+
+                yield return new WaitUntil(() => spendSequence.IsComplete());
+                spendSequence.Kill();
+                spendSequence = null;
+                Destroy(containerRequiredResources[i].gameObject);
+                _container3D.Remove(containerRequiredResources[i]);
+                Debug.Log("Прошло ожидание");
+            }
+            Debug.Log("Вышел из цикла");
+            containerRequiredResources.Clear();
+        }
+    }
+
+
+    private void StartSpending()
     {
         if (_isSpendingLocked)
             return;
         if (!_isSpendingActive)
             return;
-        //if (_resourceRequirements == null)
-        //return;
-        if (_suckResource3D)
+        int runOutResources = 0;
+        foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
         {
-            _spendSequence = DOTween.Sequence();
-            if (_container3D.resourceModelsAmount <= 0)
+
+            if (!resourceStorage.ContainsKey(requirement.type))
+                continue;
+
+            if (resourceStorage[requirement.type] < requirement.amount && _collector.GetResourceAmount(requirement.type) >= _amountPerTick)
             {
-                StopSpending(collector);
-                return;
+                _collector.RemoveResource(_amountPerTick, requirement.type);
+                AddToStorage(_amountPerTick, requirement.type);
             }
-                Debug.Log(_container3D.resourceModelsAmount - 1);
-            var resourceModel = _container3D.resourceModels[_container3D.resourceModelsAmount - 1];
-            _container3D.Remove(_container3D.resourceModels[_container3D.resourceModelsAmount - 1]);
-            _spendSequence.Append(resourceModel.transform.DOJump(transform.position, _spendJumpPower, 1, _spendDuration)
-                .OnComplete(() =>
+            else
             {
-                Destroy(resourceModel);
-                collector.RemoveResource(_amountPerTick, _resourceType);
-
-            AddToStorage(_amountPerTick, ResourceType.Gold);
-                /*
-            if (_resourceStorage.GetAmount(ResourceType.Gold) >= _resourceRequirements.GetAmount(ResourceType.Gold))
-            {
-                _isSpendingLocked = true;
-                StopSpending(collector);
-                ActivateEvent();
-
-                return;
+                runOutResources++;
             }
-                */
-            //StartSpending(collector, interactor);
-
-            }));
-
         }
-        else
+        if (runOutResources == _requiredResources.requiredResources.Count())
         {
-            int runOutResources = 0;
-            foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
-            {
-
-                if (!resourceStorage.ContainsKey(requirement.type))
-                    continue;
-
-                if (resourceStorage[requirement.type] < requirement.amount && collector.GetResourceAmount(requirement.type) >= _amountPerTick)
-                {
-                    collector.RemoveResource(_amountPerTick, requirement.type);
-                    AddToStorage(_amountPerTick, requirement.type);
-                }
-                else
-                {
-                    runOutResources++;
-                }
-            }
-            Debug.Log(runOutResources);
-            if (CheckResourceCompletion())
-            {
-                StopSpending(collector);
-                ActivateEvent();
-                return;
-            }
-            if (runOutResources == _requiredResources.requiredResources.Count())
-            {
-                StopSpending(collector);
-            }
-
+            StopSpending();
         }
     }
     private bool CheckResourceCompletion()
@@ -188,16 +227,54 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     private void AddToStorage(int amount, ResourceType type)
     {
         VisualRequireSetter visualRequireSetter = requireVisual[type].GetComponent<VisualRequireSetter>();
-        visualRequireSetter.SetValue(visualRequireSetter.Value-amount);
-       _fillImage.fillAmount += _fillOnePercent * amount;
+        visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
+        _fillImage.fillAmount += _fillOnePercent * amount;
         resourceStorage[type] += amount;
-        //_resourceStorage.AddValue(amount, type);
+        if (haptic != null)
+        {
+            HapticController.fallbackPreset = HapticPatterns.PresetType.Selection;
+            HapticController.Play(haptic);
+        }
+        if (_suckResource3D)
+        {
+            Sequence addAnimation = DOTween.Sequence();
+
+            addAnimation.Append(resourceTarget.transform.DOScale(startResourceTargetScale * 1.3f, 0.2f))
+            .Append(resourceTarget.transform.DOScale(startResourceTargetScale, 0.2f))
+            .OnComplete(() =>
+            {
+                if (CheckResourceCompletion())
+                {
+                    StopSpending();
+                    ActivateEvent();
+                    return;
+                }
+            });
+
+        }
+        else
+        {
+            if (CheckResourceCompletion())
+            {
+                StopSpending();
+                _requiredResources = null;
+                ActivateEvent();
+                return;
+            }
+        }
     }
-    private void StopSpending(ICollector collector)
+    private void StopSpending()
     {
         _isSpendingActive = false;
         if (SpendAnimation)
-            collector.EndAnimation();
+            _collector.EndAnimation();
+        containerRequiredResources.Clear();
+        if (spending3DCoroutine != null)
+        {
+            StopCoroutine(spending3DCoroutine);
+            spending3DCoroutine = null;
+        }
+        _collector = null;
     }
     private void ChangeFillColor()
     {
@@ -228,11 +305,11 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         _fillImage.DOFillAmount(0, 0.1f);
         OnEventActivate?.Invoke();
     }
-    IEnumerator StartSpendingWithDelay(ICollector collector, GameObject interactor)
+    IEnumerator StartSpendingWithDelay()
     {
         while (_isSpendingActive && !_isSpendingLocked)
         {
-            StartSpending(collector, interactor);
+            StartSpending();
             yield return new WaitForSeconds(_spendDelay);
         }
         yield return null;
