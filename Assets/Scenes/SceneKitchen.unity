@@ -2745,6 +2745,12 @@ PrefabInstance:
       propertyPath: _lookAtTarget
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1600510306877203066, guid: 8eb7beef52f7c134aa33e8a6e1bc7788,
+        type: 3}
+      propertyPath: _resourceModel
+      value: 
+      objectReference: {fileID: 7816921015947146935, guid: b9193d623d64b394c9bb0303cfc0cc9b,
+        type: 3}
     - target: {fileID: 2598293144878100788, guid: 8eb7beef52f7c134aa33e8a6e1bc7788,
         type: 3}
       propertyPath: m_RootOrder
