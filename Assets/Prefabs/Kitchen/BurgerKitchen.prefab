@@ -354,7 +354,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d09222600ec234e4b95355dd698db397, type: 3}
+  m_Sprite: {fileID: 21300000, guid: af8b3df0a2611fd42981bfaf1820e0cf, type: 3}
   m_Color: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 0.84313726}
   m_FlipX: 0
   m_FlipY: 0
@@ -1386,7 +1386,7 @@ MonoBehaviour:
   _capacity: 0
   _resourceAmount: 0
   _characterAnimationType: 3
-  _target: {fileID: 0}
+  _target: {fileID: 5775119183206125634}
   _lookAtTarget: 1
   UseResourceModel: 1
   _resourceModel: {fileID: 7816921015947146935, guid: 149256b29af9f7d4a9dfb05320dbb489,
@@ -1396,7 +1396,7 @@ MonoBehaviour:
   _resourceVisual: {fileID: 0}
   _uiResourceTransform: {fileID: 0}
   _uiNewTransform: {fileID: 0}
-  cam: {fileID: 0}
+  haptic: {fileID: -8404250095460277587, guid: 4094d5ed8096149f3b5b549507dd4720, type: 3}
 --- !u!65 &2450400433712260514
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -982,8 +982,8 @@ MonoBehaviour:
   _capacity: 0
   _resourceAmount: 0
   _characterAnimationType: 3
-  _target: {fileID: 0}
-  _lookAtTarget: 0
+  _target: {fileID: 6173396203876715643}
+  _lookAtTarget: 1
   UseResourceModel: 1
   _resourceModel: {fileID: 6691177659666924900, guid: 187b5ef7a2a3bef4ab608f1ec0f62cf1,
     type: 3}
@@ -992,7 +992,7 @@ MonoBehaviour:
   _resourceVisual: {fileID: 0}
   _uiResourceTransform: {fileID: 0}
   _uiNewTransform: {fileID: 0}
-  cam: {fileID: 0}
+  haptic: {fileID: -8404250095460277587, guid: 4094d5ed8096149f3b5b549507dd4720, type: 3}
 --- !u!65 &4648318189200041763
 BoxCollider:
   m_ObjectHideFlags: 0

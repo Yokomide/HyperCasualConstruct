@@ -430,9 +430,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 942746428962047242, guid: 348144f999d1c466791ea06f1fd15152,
         type: 3}
+      propertyPath: haptic
+      value: 
+      objectReference: {fileID: -8404250095460277587, guid: 4094d5ed8096149f3b5b549507dd4720,
+        type: 3}
+    - target: {fileID: 942746428962047242, guid: 348144f999d1c466791ea06f1fd15152,
+        type: 3}
       propertyPath: _resourceModel
       value: 
-      objectReference: {fileID: 7816921015947146935, guid: 149256b29af9f7d4a9dfb05320dbb489,
+      objectReference: {fileID: 7816921015947146935, guid: b9193d623d64b394c9bb0303cfc0cc9b,
         type: 3}
     - target: {fileID: 942746428962047242, guid: 348144f999d1c466791ea06f1fd15152,
         type: 3}
