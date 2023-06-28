@@ -16,8 +16,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (_joystick.Horizontal != 0 || _joystick.Vertical != 0)
         {
-            transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
-            _animator.SetBool("isWalking", true);
+            if (_rigidbody.velocity != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
+                _animator.SetBool("isWalking", true);
+            }
         }
         else
             _animator.SetBool("isWalking", false);

@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Collider),typeof(Resource3D))]
+
 public class PickableResource3D : MonoBehaviour
 {
-    [SerializeField] private ResourceType _resourceType;
     [SerializeField] private Collider _collider;
     [SerializeField] private int _amount;
+    private Resource3D _resource3D;
+
+    private void Start()
+    {
+        _resource3D = GetComponent<Resource3D>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,8 +20,8 @@ public class PickableResource3D : MonoBehaviour
             return;
         if (!other.TryGetComponent(out ResourceContainer3D container))
             return;
-        collector.AddResource(_amount, _resourceType);
-        container.Add(gameObject);
+        collector.AddResource(_amount, _resource3D.Type);
+        container.Add(_resource3D);
         _collider.enabled = false;
        
     }

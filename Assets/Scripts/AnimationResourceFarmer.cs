@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Lofelt.NiceVibrations;
 using UnityEngine;
 using Sequence = DG.Tweening.Sequence;
 
@@ -37,7 +38,9 @@ public class AnimationResourceFarmer : MonoBehaviour
     [SerializeField, ConditionalHide("ResourceToUIAnim", true)] private GameObject _uiResourceTransform;
     [SerializeField, ConditionalHide("ResourceToUIAnim", true)] private GameObject _uiNewTransform;
 
-    [SerializeField] private Camera cam;
+    [Header("====Feelings====")]
+    public HapticClip haptic;
+
 
     private ICollector _collector;
     private GameObject _interactor;
@@ -155,11 +158,18 @@ public class AnimationResourceFarmer : MonoBehaviour
 
     private void SpawnResourceModel(ResourceContainer3D resourceContainer3D)
     {
-        var resource3D = Instantiate(_resourceModel, _target.position, Quaternion.identity);
+        GameObject resource3D = Instantiate(_resourceModel, _target.position, Quaternion.identity);
+        if (haptic != null)
+        {
+            HapticController.fallbackPreset = HapticPatterns.PresetType.Selection;
+            HapticController.Play(haptic);
+        }
+
         resource3D.transform.localScale = new Vector3(0, 0, 0);
+
         _resourceSequence = DOTween.Sequence();
         _resourceSequence.Append(resource3D.transform.DOMove(new Vector3(resource3D.gameObject.transform.position.x, resource3D.gameObject.transform.position.y + 3, resource3D.gameObject.transform.position.z), 0.3f))
-            .Join(resource3D.transform.DOScale(1, 0.4f)).OnComplete(() => resourceContainer3D.Add(resource3D));
+            .Join(resource3D.transform.DOScale(1, 0.4f)).OnComplete(() => resourceContainer3D.Add(resource3D.GetComponent<Resource3D>()));
 
     }
     private void SetLookAt()

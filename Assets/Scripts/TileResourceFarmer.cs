@@ -147,7 +147,7 @@ public class TileResourceFarmer : MonoBehaviour
         var resource3D = Instantiate(_resourceModel, gameObject.transform.position, Quaternion.identity);
         resource3D.transform.localScale = new Vector3(0,0,0);
         resource3D.transform.DOScale(1, 0.1f);
-        resourceContainer3D.Add(resource3D);
+        resourceContainer3D.Add(resource3D.GetComponent<Resource3D>());
         
 
     }
