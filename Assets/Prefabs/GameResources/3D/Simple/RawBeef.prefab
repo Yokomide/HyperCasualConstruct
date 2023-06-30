@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3b20fc9e84b968641b7312bdcdd1ffd8, type: 2}
+  - {fileID: 2100000, guid: 284c356f2f17a644380d230a1abff44b, type: 2}
   - {fileID: 2100000, guid: f9c4a99059a34d842b70997d0245fde2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 5434055182265993637}
   - component: {fileID: 2522350720737365334}
   m_Layer: 0
-  m_Name: Beef
+  m_Name: RawBeef
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

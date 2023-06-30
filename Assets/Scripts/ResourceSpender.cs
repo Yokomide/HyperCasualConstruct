@@ -15,7 +15,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     [Header("====Resource Settings====")]
     [SerializeField] public RequiredResourcesData _requiredResources;
 
-
     [Space(10)]
 
     [Header("====Spend Settings====")]
@@ -69,13 +68,13 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     private Coroutine spending3DCoroutine;
     private void OnTriggerEnter(Collider other)
     {
+        if (!other.TryGetComponent(out ICollector collector))
+            return;
+        _collector = collector;
         if (_isSpendingLocked)
             return;
         if (_requiredResources == null)
             return;
-        if (!other.TryGetComponent(out ICollector collector))
-            return;
-        _collector = collector;
         _isSpendingActive = true;
         if (SpendAnimation)
             collector.StartAnimation(_characterAnimationType, _animationSpeed);
@@ -90,11 +89,7 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
 
     private void OnTriggerExit(Collider other)
     {
-        if (_collector == null)
-        {
-            return;
-        }
-        if (other.TryGetComponent(out ICollector collector))
+        if (!other.TryGetComponent(out ICollector collector))
             return;
         StopSpending();
     }
@@ -142,6 +137,7 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
                 {
                     if (_requiredResources.requiredResources.IndexOf(requirement) == _requiredResources.requiredResources.Count - 1)
                     {
+                        StopSpending();
                         yield break;
                     }
                     else
@@ -176,11 +172,10 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
                 spendSequence = null;
                 Destroy(containerRequiredResources[i].gameObject);
                 _container3D.Remove(containerRequiredResources[i]);
-                Debug.Log("Прошло ожидание");
             }
-            Debug.Log("Вышел из цикла");
             containerRequiredResources.Clear();
         }
+        StopSpending();
     }
 
 
@@ -232,7 +227,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         resourceStorage[type] += amount;
         if (haptic != null)
         {
-            HapticController.fallbackPreset = HapticPatterns.PresetType.Selection;
             HapticController.Play(haptic);
         }
         if (_suckResource3D)
@@ -267,7 +261,12 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     {
         _isSpendingActive = false;
         if (SpendAnimation)
-            _collector.EndAnimation();
+        {
+            if (_collector != null)
+            {
+                _collector.EndAnimation();
+            }
+        }
         containerRequiredResources.Clear();
         if (spending3DCoroutine != null)
         {
