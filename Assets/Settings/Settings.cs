@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
-    [SerializeField][Min(10)] private int _frameRate = 60;
+    [SerializeField][Min(10)] private int _frameRateLock = 60;
     [SerializeField][Min(0)] private int _vSyncCount = 0;
-    [SerializeField] private TMP_Dropdown _dropdown;
+     private TMP_Dropdown _dropdown;
 
     private void Start()
     {
-        Application.targetFrameRate = _frameRate;
+        Application.targetFrameRate = _frameRateLock;
         QualitySettings.vSyncCount = _vSyncCount;
 
         // Application.targetFrameRate = Screen.currentResolution.refreshRate;
@@ -21,26 +21,26 @@ public class Settings : MonoBehaviour
         switch (_dropdown.value)
         {
             case 0:
-                _frameRate = 30;
+                _frameRateLock = 30;
                 break;
 
             case 1:
-                _frameRate = 60;
+                _frameRateLock = 60;
                 break;
 
             case 2:
-                _frameRate = 90;
+                _frameRateLock = 90;
                 break;
 
             case 3:
-                _frameRate = 120;
+                _frameRateLock = 120;
                 break;
 
             default:
-                _frameRate = 60;
+                _frameRateLock = 60;
                 break;
         }
 
-        Application.targetFrameRate = _frameRate;
+        Application.targetFrameRate = _frameRateLock;
     }
 }

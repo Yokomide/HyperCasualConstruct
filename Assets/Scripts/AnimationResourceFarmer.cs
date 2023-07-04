@@ -25,7 +25,6 @@ public class AnimationResourceFarmer : MonoBehaviour
     [SerializeField] private CharacterAnimationType _characterAnimationType;
     [SerializeField] private Transform _target;
     [SerializeField] private bool _lookAtTarget;
-    private Animator _animator; 
     [Space(10)]
 
     [Header("====Visual====")]
@@ -43,17 +42,16 @@ public class AnimationResourceFarmer : MonoBehaviour
 
 
     private ICollector _collector;
+
     private GameObject _interactor;
     private AnimationEventsHolder _animEventsHolder;
-
-    private bool _eventSubscribed;
     private Sequence _resourceSequence;
 
+    private bool _eventSubscribed;
     private bool _isFarmingActive;
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
         if (_startAmountEqualCapacity)
         {
             _resourceAmount = _capacity;
@@ -93,8 +91,6 @@ public class AnimationResourceFarmer : MonoBehaviour
         }
 
         _collector.StartAnimation(_characterAnimationType, _farmSpeed);
-
-            
     }
     private void StopFarming()
     {

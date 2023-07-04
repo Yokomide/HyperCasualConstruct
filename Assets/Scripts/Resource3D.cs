@@ -8,6 +8,9 @@ public class Resource3D : MonoBehaviour
     [SerializeField] private ResourceType _resourceType;
     public ResourceType Type { get { return _resourceType; } }
 
+    private bool _isUpgradeable;
+    public bool IsUpgradeable { get { return _isUpgradeable; } }
+
 
     private GameObject _gameObject;
     public GameObject GameObject { get { return _gameObject; } }

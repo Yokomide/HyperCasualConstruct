@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using UnityEngine;
+using UnityEngine.UI;
 public class TileResourceFarmer : MonoBehaviour
 {
     [Header("====Resource Settings====")]
@@ -39,8 +39,6 @@ public class TileResourceFarmer : MonoBehaviour
     [SerializeField, ConditionalHide("ResourceToUIAnim", true)] private GameObject _uiResourceTransform;
     [SerializeField, ConditionalHide("ResourceToUIAnim", true)] private GameObject _uiNewTransform;
 
-    [SerializeField] private Camera cam;
-
     private Sequence _farmSequence;
     private Sequence _resourceSequence;
 
@@ -62,8 +60,8 @@ public class TileResourceFarmer : MonoBehaviour
         if (LimitCapacity && _resourceAmount < _amountPerTick)
             return;
         _isFarmingActive = true;
-        StartFarming(collector, other.gameObject);
 
+        StartFarming(collector, other.gameObject);
         if (CollectAnimation)
             collector.StartAnimation(_characterAnimationType);
     }
@@ -92,7 +90,7 @@ public class TileResourceFarmer : MonoBehaviour
         _isFarmingActive = false;
         _farmSequence.Kill();
 
-            _fillImage.DOFillAmount(0, _farmCancelSpeed);
+        _fillImage.DOFillAmount(0, _farmCancelSpeed);
 
         if (CollectAnimation)
             collector.EndAnimation();
@@ -145,10 +143,10 @@ public class TileResourceFarmer : MonoBehaviour
     private void SpawnResourceModel(ResourceContainer3D resourceContainer3D)
     {
         var resource3D = Instantiate(_resourceModel, gameObject.transform.position, Quaternion.identity);
-        resource3D.transform.localScale = new Vector3(0,0,0);
+        resource3D.transform.localScale = new Vector3(0, 0, 0);
         resource3D.transform.DOScale(1, 0.1f);
         resourceContainer3D.Add(resource3D.GetComponent<Resource3D>());
-        
+
 
     }
     private void ChangeFillColor()

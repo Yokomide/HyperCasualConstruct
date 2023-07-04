@@ -4,7 +4,8 @@ public enum ResourceType
     BlueDiamond,
     RedDiamond,
     Burger,
-    Drink,
     Bun,
-    Cutlet
+    RawCutlet,
+    Cutlet,
+    Drink
 }

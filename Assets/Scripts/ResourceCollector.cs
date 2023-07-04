@@ -5,7 +5,6 @@ using UnityEngine;
 public class ResourceCollector : MonoBehaviour, ICollector
 {
     [SerializeField] private ResourceStorage _resourceStorage;
-
     private Animator _animator;
 
     private void Start()
@@ -13,19 +12,20 @@ public class ResourceCollector : MonoBehaviour, ICollector
         if (TryGetComponent(out Animator anim))
             _animator = anim;
     }
-
-    public void AddItem(int amount, string type)
+    public int GetResourceAmount(ResourceType resourceType)
     {
+        return _resourceStorage.GetAmount(resourceType);
     }
-
     public void AddResource(int amount, ResourceType resource)
     {
         _resourceStorage.AddValue(amount, resource);
     }
+
     public void RemoveResource(int amount, ResourceType resource)
     {
         _resourceStorage.RemoveValue(amount, resource);
     }
+
     public void StartAnimation(CharacterAnimationType characterAnimationType)
     {
         switch(characterAnimationType)
@@ -41,6 +41,7 @@ public class ResourceCollector : MonoBehaviour, ICollector
                 break;
         }
     }
+
     public void StartAnimation(CharacterAnimationType characterAnimationType, float speed)
     {
         StartAnimation(characterAnimationType);
@@ -56,15 +57,5 @@ public class ResourceCollector : MonoBehaviour, ICollector
 
     }
 
-    public void PlayOneShotCollectAnimation()
-    {
-        // _animator.Play("");
-    }
-
-
-    public int GetResourceAmount(ResourceType resourceType)
-    {
-        return _resourceStorage.GetAmount(resourceType);
-    }
 
 }

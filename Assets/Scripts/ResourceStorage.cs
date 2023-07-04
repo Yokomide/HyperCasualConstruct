@@ -13,7 +13,7 @@ public class ResourceStorage : ScriptableObject, IStorage
     [SerializeField] private int _burgerAmount;
     [SerializeField] private int _bunAmount;
     [SerializeField] private int _cutletAmount;
-
+    [SerializeField] private int _rawCutletAmount;
     private ref int GetResourceReference(ResourceType type)
     {
         switch (type)
@@ -35,6 +35,9 @@ public class ResourceStorage : ScriptableObject, IStorage
 
             case ResourceType.Cutlet:
                 return ref _cutletAmount;
+
+            case ResourceType.RawCutlet:
+                return ref _rawCutletAmount;
 
             default: return ref _goldAmount;
         }
