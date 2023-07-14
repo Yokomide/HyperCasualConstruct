@@ -228,7 +228,7 @@ public class ObjectTrade : MonoBehaviour
     IEnumerator TradeProcessing(Resource3D resource)
     {
         Tween tradeProcessTween = resource.transform.DOScale(0.5f, 0.4f).SetLoops(-1, LoopType.Yoyo);
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(4f/ _container3D.GetComponent<PlayerStats>().TradeSpeed);
         tradeProcessTween.Complete();
         tradeProcessTween.Kill();
         Destroy(resource.gameObject);

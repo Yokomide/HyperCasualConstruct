@@ -1,6 +1,6 @@
 using System;
 
-interface IEventActivator
+public interface IEventActivator
 {
     public event Action OnEventActivate;
     public void ActivateEvent();

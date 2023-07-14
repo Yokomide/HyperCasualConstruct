@@ -12,8 +12,8 @@ public class TweenAnimationContoller : MonoBehaviour
     [TableList(ShowIndexLabels = true)]
     public List<AnimationSettings> _settings = new List<AnimationSettings>();
 
-    public List<Tween> _storedAnimation = new List<Tween>();
-    public List<GameObject> _animationTargets = new List<GameObject>();
+    public Dictionary<int, Tween> _storedAnimation = new Dictionary<int, Tween>();
+    public Dictionary<int, GameObject> _animationTargets = new Dictionary<int, GameObject>();
 
 
     [Serializable]
@@ -93,9 +93,21 @@ public class TweenAnimationContoller : MonoBehaviour
 
     public void RewindAnimation(int index)
     {
+        if (_storedAnimation.Count <= 0)
+        {
+            return;
+        }
+        if (_storedAnimation[index] == null)
+        {
+            return;
+        }
         _storedAnimation[index].SmoothRewind();
+        _storedAnimation[index].OnRewind(() =>
 
-        _storedAnimation[index].OnComplete(() => _animationTargets[index].SetActive(false));
+        {
+            _animationTargets[index].SetActive(false);
+            ClearStoredElement(index);
+        });
     }
     private void ScaleToZero(GameObject animationTarget, int index)
     {
@@ -113,8 +125,9 @@ public class TweenAnimationContoller : MonoBehaviour
         });
         if (_settings[index]._storeAnimation)
         {
-            _storedAnimation.Add(animation);
-            _animationTargets.Add(animationTarget);
+            _storedAnimation.Add(index, animation);
+
+            _animationTargets.Add(index, animationTarget);
         }
 
     }
@@ -135,8 +148,9 @@ public class TweenAnimationContoller : MonoBehaviour
         });
         if (_settings[index]._storeAnimation)
         {
-            _storedAnimation.Add(animation);
-            _animationTargets.Add(animationTarget);
+            _storedAnimation.Add(index, animation);
+
+            _animationTargets.Add(index, animationTarget);
         }
     }
     private void ScaleFromCurrent(GameObject animationTarget, int index)
@@ -155,28 +169,42 @@ public class TweenAnimationContoller : MonoBehaviour
         });
         if (_settings[index]._storeAnimation)
         {
-            _storedAnimation.Add(animation);
-            _animationTargets.Add(animationTarget);
+            _storedAnimation.Add(index, animation);
+
+            _animationTargets.Add(index, animationTarget);
         }
     }
     private void Move(GameObject animationTarget, int index)
     {
+        if (_storedAnimation.Count > 0)
+        {
+            if (_storedAnimation[index] != null)
+            {
+                if (_storedAnimation[index].IsPlaying())
+                {
+
+                    return;
+                }
+            }
+        }
         var animation = animationTarget.transform.DOMove(_settings[index]._targetPosition.position, _settings[index]._duration)
              .SetAutoKill(false);
 
         animation.OnComplete(() =>
-        {
-            if (_callAnimationEndEvent)
-                OnAnimationEnd?.Invoke();
-            if (!_settings[index]._storeAnimation)
-            {
-                animation.Kill();
-            }
-        });
+         {
+             if (_callAnimationEndEvent)
+                 OnAnimationEnd?.Invoke();
+             if (!_settings[index]._storeAnimation)
+             {
+                 animation.Kill();
+             }
+         });
         if (_settings[index]._storeAnimation)
         {
-            _storedAnimation.Add(animation);
-            _animationTargets.Add(animationTarget);
+            Debug.Log("Должно добавить");
+            _storedAnimation.Add(index, animation);
+
+            _animationTargets.Add(index, animationTarget);
         }
     }
     private void Jump(GameObject animationTarget, int index)
@@ -195,8 +223,9 @@ public class TweenAnimationContoller : MonoBehaviour
         });
         if (_settings[index]._storeAnimation)
         {
-            _storedAnimation.Add(animation);
-            _animationTargets.Add(animationTarget);
+            _storedAnimation.Add(index, animation);
+
+            _animationTargets.Add(index, animationTarget);
         }
     }
 
@@ -204,6 +233,13 @@ public class TweenAnimationContoller : MonoBehaviour
     {
         _storedAnimation.Clear();
         _animationTargets.Clear();
+    }
+
+
+    public void ClearStoredElement(int Index)
+    {
+        _storedAnimation.Remove(Index);
+        _animationTargets.Remove(Index);
     }
 
 }

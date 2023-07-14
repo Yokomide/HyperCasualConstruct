@@ -7,57 +7,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using Sequence = DG.Tweening.Sequence;
-using Vector3 = UnityEngine.Vector3;
 
-public class ResourceSpender : MonoBehaviour, IEventActivator
+public class Spender3D : Spender
 {
-    [Header("====Resource Settings====")]
-    [SerializeField] public RequiredResourcesData _requiredResources;
-
     [Space(10)]
 
     [Header("====Spend Settings====")]
-    [SerializeField] private float _spendDelay;
-    [SerializeField] private float _spendSpeed;
-    [SerializeField] private float _spendCancelSpeed;
     [SerializeField] private float _spendJumpPower;
-    [SerializeField] private float _spendDuration;
-    [Space(5)]
-    [SerializeField] private bool _isSpendingLocked;
-    [SerializeField] private int _amountPerTick;
-    [SerializeField] private bool _suckResource3D;
-    [Space(10)]
-
-    [Header("====Animation====")]
-    [SerializeField] private bool SpendAnimation;
-    [SerializeField] private CharacterAnimationType _characterAnimationType;
-    [SerializeField] private float _animationSpeed;
-    [Space(10)]
 
     [Header("====Visual====")]
     [OnValueChanged("ChangeFillColor")]
     [SerializeField] private Color _fillColor;
     [SerializeField] private Image _fillImage;
-    [SerializeField] private Transform _UIHolder;
-    [SerializeField] private GameObject _UIPrefab;
-    [SerializeField] public Transform resourceTarget;
 
-    [HideInInspector] public event Action OnEventActivate;
-
-    [Header("====Feelings====")]
-    public HapticClip haptic;
-
-
-    [HideInInspector] public Vector3 startResourceTargetScale;
-
-    private Dictionary<ResourceType, int> resourceStorage = new Dictionary<ResourceType, int>();
-
-    private Dictionary<ResourceType, GameObject> requireVisual = new Dictionary<ResourceType, GameObject>();
+    private ICollector _collector;
 
     private List<Resource3D> containerRequiredResources = new List<Resource3D>();
 
-    private ICollector _collector;
     private ResourceContainer3D _container3D;
 
     private float _fillMaxAmount;
@@ -78,13 +44,10 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         _isSpendingActive = true;
         if (SpendAnimation)
             collector.StartAnimation(_characterAnimationType, _animationSpeed);
-        if (_suckResource3D)
-        {
-            _container3D = other.GetComponent<ResourceContainer3D>();
-            spending3DCoroutine = StartCoroutine(StartSpending3D());
-            return;
-        }
-        StartCoroutine(StartSpendingWithDelay());
+
+        _container3D = other.GetComponent<ResourceContainer3D>();
+        StartSpending();
+        return;
     }
 
     private void OnTriggerExit(Collider other)
@@ -93,7 +56,8 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
             return;
         StopSpending();
     }
-    public void UpdateRequirments(RequiredResourcesData requiredResourcesData)
+
+    public override void UpdateRequirments(RequiredResourcesData requiredResourcesData)
     {
         ClearDictionaries();
         _requiredResources = requiredResourcesData;
@@ -109,6 +73,31 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         _fillOnePercent = 1 / _fillMaxAmount;
         _fillMaxAmount = 0;
 
+    }
+
+
+    public override void StartSpending()
+    {
+        spending3DCoroutine = StartCoroutine(StartSpending3D());
+    }
+
+    public override void StopSpending()
+    {
+        _isSpendingActive = false;
+        if (SpendAnimation)
+        {
+            if (_collector != null)
+            {
+                _collector.EndAnimation();
+            }
+        }
+        containerRequiredResources.Clear();
+        if (spending3DCoroutine != null)
+        {
+            StopCoroutine(spending3DCoroutine);
+            spending3DCoroutine = null;
+        }
+        _collector = null;
     }
 
     IEnumerator StartSpending3D()
@@ -177,37 +166,32 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         }
         StopSpending();
     }
-
-
-    private void StartSpending()
+    public override void AddToStorage(int amount, ResourceType type)
     {
-        if (_isSpendingLocked)
-            return;
-        if (!_isSpendingActive)
-            return;
-        int runOutResources = 0;
-        foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
+        VisualRequireSetter visualRequireSetter = requireVisual[type].GetComponent<VisualRequireSetter>();
+        visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
+        _fillImage.fillAmount += _fillOnePercent * amount;
+        resourceStorage[type] += amount;
+        if (haptic != null)
         {
-
-            if (!resourceStorage.ContainsKey(requirement.type))
-                continue;
-
-            if (resourceStorage[requirement.type] < requirement.amount && _collector.GetResourceAmount(requirement.type) >= _amountPerTick)
-            {
-                _collector.RemoveResource(_amountPerTick, requirement.type);
-                AddToStorage(_amountPerTick, requirement.type);
-            }
-            else
-            {
-                runOutResources++;
-            }
+            HapticController.Play(haptic);
         }
-        if (runOutResources == _requiredResources.requiredResources.Count())
+
+        Sequence addAnimation = DOTween.Sequence();
+
+        addAnimation.Append(resourceTarget.transform.DOScale(startResourceTargetScale * 1.3f, 0.2f))
+        .Append(resourceTarget.transform.DOScale(startResourceTargetScale, 0.2f))
+        .OnComplete(() =>
         {
-            StopSpending();
-        }
+            if (CheckResourceCompletion())
+            {
+                StopSpending();
+                ActivateEvent();
+                return;
+            }
+        });
     }
-    private bool CheckResourceCompletion()
+    public override bool CheckResourceCompletion()
     {
         foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
         {
@@ -218,68 +202,11 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         }
         return true;
     }
-
-    private void AddToStorage(int amount, ResourceType type)
-    {
-        VisualRequireSetter visualRequireSetter = requireVisual[type].GetComponent<VisualRequireSetter>();
-        visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
-        _fillImage.fillAmount += _fillOnePercent * amount;
-        resourceStorage[type] += amount;
-        if (haptic != null)
-        {
-            HapticController.Play(haptic);
-        }
-        if (_suckResource3D)
-        {
-            Sequence addAnimation = DOTween.Sequence();
-
-            addAnimation.Append(resourceTarget.transform.DOScale(startResourceTargetScale * 1.3f, 0.2f))
-            .Append(resourceTarget.transform.DOScale(startResourceTargetScale, 0.2f))
-            .OnComplete(() =>
-            {
-                if (CheckResourceCompletion())
-                {
-                    StopSpending();
-                    ActivateEvent();
-                    return;
-                }
-            });
-
-        }
-        else
-        {
-            if (CheckResourceCompletion())
-            {
-                StopSpending();
-                _requiredResources = null;
-                ActivateEvent();
-                return;
-            }
-        }
-    }
-    private void StopSpending()
-    {
-        _isSpendingActive = false;
-        if (SpendAnimation)
-        {
-            if (_collector != null)
-            {
-                _collector.EndAnimation();
-            }
-        }
-        containerRequiredResources.Clear();
-        if (spending3DCoroutine != null)
-        {
-            StopCoroutine(spending3DCoroutine);
-            spending3DCoroutine = null;
-        }
-        _collector = null;
-    }
     private void ChangeFillColor()
     {
         _fillImage.color = _fillColor;
     }
-    public void ClearDictionaries()
+    public override void ClearDictionaries()
     {
         resourceStorage.Clear();
         if (requireVisual.Count > 0)
@@ -298,19 +225,5 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     public void UnlockSpend()
     {
         _isSpendingLocked = false;
-    }
-    public void ActivateEvent()
-    {
-        _fillImage.DOFillAmount(0, 0.1f);
-        OnEventActivate?.Invoke();
-    }
-    IEnumerator StartSpendingWithDelay()
-    {
-        while (_isSpendingActive && !_isSpendingLocked)
-        {
-            StartSpending();
-            yield return new WaitForSeconds(_spendDelay);
-        }
-        yield return null;
     }
 }

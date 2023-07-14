@@ -90,7 +90,7 @@ public class AnimationResourceFarmer : MonoBehaviour
             return;
         }
 
-        _collector.StartAnimation(_characterAnimationType, _farmSpeed);
+        _collector.StartAnimation(_characterAnimationType, _farmSpeed * _interactor.GetComponent<PlayerStats>().FarmSpeed);
     }
     private void StopFarming()
     {

@@ -11,7 +11,7 @@ public class CarSystem : MonoBehaviour
 
     public List<Orders> ordersContainer = new List<Orders>();
 
-    [SerializeField] private ResourceSpender _resourceSpender;
+    [SerializeField] private Spender _resourceSpender;
 
     private GameObject _currentCar;
 

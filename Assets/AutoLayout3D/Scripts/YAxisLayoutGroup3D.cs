@@ -12,10 +12,10 @@ namespace AutoLayout3D
         public Direction childDirection = Direction.LowerToUpper;
         public Bool3 childControlSize = new Bool3();
         public Bool3 childForceExpand = new Bool3();
-        public TextMeshProUGUI text;
+       // public TextMeshProUGUI text;
         public override void UpdateLayout()
         {
-            text.text = Random.Range(0, 10).ToString();
+            //text.text = Random.Range(0, 10).ToString();
             elementList.Clear();
             float sum = 0.0f;
             foreach (Transform child in transform)
