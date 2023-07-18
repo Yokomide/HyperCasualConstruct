@@ -24,7 +24,7 @@ public class ResourceContainer3D : MonoBehaviour
     }
     public void Add(Resource3D resource)
     {
-
+        Debug.Log("Вот ресурс: " + resource);
         resources.Add(resource);
         float duration = _resourceFlyDuration;
         var tweener = resource.transform

@@ -29,6 +29,7 @@ public class VisualRequireSetter : MonoBehaviour
     }
     public void SetValue(int value)
     {
+        Debug.Log("Новое значение: " + value);
         Value = value;
         _value.text = value.ToString();
     }

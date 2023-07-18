@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using Sequence = DG.Tweening.Sequence;
 using Vector3 = UnityEngine.Vector3;
 
-public class ResourceSpender : MonoBehaviour, IEventActivator
+public class ObjectMerger : MonoBehaviour, IEventActivator
 {
     [Header("====Resource Settings====")]
     [SerializeField] public RequiredResourcesData _requiredResources;
@@ -18,7 +18,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     [Space(10)]
 
     [Header("====Spend Settings====")]
-    [SerializeField] private bool _initializeRequrimentsOnStart;
     [SerializeField] private float _spendDelay;
     [SerializeField] private float _spendSpeed;
     [SerializeField] private float _spendCancelSpeed;
@@ -60,7 +59,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
 
     private ICollector _collector;
     private ResourceContainer3D _container3D;
-    public ResourceContainer3D Containter3D => _container3D;
 
     private float _fillMaxAmount;
     private float _fillOnePercent;
@@ -68,13 +66,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     private bool _isSpendingActive;
 
     private Coroutine spending3DCoroutine;
-    private void Awake()
-    {
-        if(_initializeRequrimentsOnStart)
-        {
-            UpdateRequirments(_requiredResources);
-        }
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (!other.TryGetComponent(out ICollector collector))
@@ -111,12 +102,9 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
             resourceStorage.Add(requirement.type, 0);
 
             _fillMaxAmount += requirement.amount;
-            if (_UIHolder != null & _UIPrefab != null)
-            {
-                var requirementUI = Instantiate(_UIPrefab, _UIHolder);
-                requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
-                requireVisual.Add(requirement.type, requirementUI);
-            }
+            var requirementUI = Instantiate(_UIPrefab, _UIHolder);
+            requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
+            requireVisual.Add(requirement.type, requirementUI);
         }
         _fillOnePercent = 1 / _fillMaxAmount;
         _fillMaxAmount = 0;
@@ -171,7 +159,7 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
                 var spendSequence = DOTween.Sequence();
                 spendSequence.SetAutoKill(false);
                 Resource3D resource = containerRequiredResources[i];
-                spendSequence.Append(resource.transform.DOJump(resourceTarget.position, _spendJumpPower, 1, _spendDuration/_container3D.GetComponent<PlayerStats>().SpendSpeed)
+                spendSequence.Append(resource.transform.DOJump(resourceTarget.position, _spendJumpPower, 1, _spendDuration / _container3D.GetComponent<PlayerStats>().SpendSpeed)
                     .OnComplete(() =>
                     {
                         _collector.RemoveResource(_amountPerTick, requirement.type);
@@ -237,7 +225,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
         visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
         _fillImage.fillAmount += _fillOnePercent * amount;
         resourceStorage[type] += amount;
-        Debug.Log(resourceStorage[type]);
         if (haptic != null)
         {
             HapticController.Play(haptic);
@@ -314,12 +301,7 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     }
     public void ActivateEvent()
     {
-        Debug.Log("Должно быть событие");
-        ClearDictionaries();
-        if (_fillImage != null)
-        {
-            _fillImage.DOFillAmount(0, 0.1f);
-        }
+        _fillImage.DOFillAmount(0, 0.1f);
         OnEventActivate?.Invoke();
     }
     IEnumerator StartSpendingWithDelay()

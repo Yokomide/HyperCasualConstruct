@@ -13,6 +13,7 @@ public class Spender3D : Spender
     [Space(10)]
 
     [Header("====Spend Settings====")]
+    [SerializeField] private bool _initializeRequrimentsOnStart;
     [SerializeField] private float _spendJumpPower;
 
     [Header("====Visual====")]
@@ -25,13 +26,20 @@ public class Spender3D : Spender
     private List<Resource3D> containerRequiredResources = new List<Resource3D>();
 
     private ResourceContainer3D _container3D;
-
+    public ResourceContainer3D Containter3D => _container3D;
     private float _fillMaxAmount;
     private float _fillOnePercent;
 
     private bool _isSpendingActive;
 
     private Coroutine spending3DCoroutine;
+    private void Awake()
+    {
+        if (_initializeRequrimentsOnStart)
+        {
+            UpdateRequirments(_requiredResources);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!other.TryGetComponent(out ICollector collector))
@@ -64,11 +72,15 @@ public class Spender3D : Spender
         foreach (RequiredResourcesData.ResourceRequirement requirement in requiredResourcesData.requiredResources)
         {
             resourceStorage.Add(requirement.type, 0);
-
+            
             _fillMaxAmount += requirement.amount;
-            var requirementUI = Instantiate(_UIPrefab, _UIHolder);
-            requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
-            requireVisual.Add(requirement.type, requirementUI);
+
+            if (_UIHolder != null & _UIPrefab != null)
+            {
+                var requirementUI = Instantiate(_UIPrefab, _UIHolder);
+                requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
+                requireVisual.Add(requirement.type, requirementUI);
+            }
         }
         _fillOnePercent = 1 / _fillMaxAmount;
         _fillMaxAmount = 0;
@@ -115,7 +127,6 @@ public class Spender3D : Spender
         {
             for (int i = 0; i < _container3D.resourceAmount; i++)
             {
-
                 if (_container3D.resources[i].Type == requirement.type && resourceStorage[requirement.type] < requirement.amount)
                 {
 
@@ -168,9 +179,16 @@ public class Spender3D : Spender
     }
     public override void AddToStorage(int amount, ResourceType type)
     {
-        VisualRequireSetter visualRequireSetter = requireVisual[type].GetComponent<VisualRequireSetter>();
-        visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
-        _fillImage.fillAmount += _fillOnePercent * amount;
+        if (requireVisual.Count > 0)
+        {
+            Debug.Log(requireVisual[type]);
+            VisualRequireSetter visualRequireSetter = requireVisual[type].GetComponent<VisualRequireSetter>();
+            visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
+        }
+        if (_fillImage != null)
+        {
+            _fillImage.fillAmount += _fillOnePercent * amount;
+        }
         resourceStorage[type] += amount;
         if (haptic != null)
         {
@@ -187,6 +205,8 @@ public class Spender3D : Spender
             {
                 StopSpending();
                 ActivateEvent();
+                if (_initializeRequrimentsOnStart)
+                    UpdateRequirments(_requiredResources);
                 return;
             }
         });
