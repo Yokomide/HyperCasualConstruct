@@ -11,6 +11,7 @@ public class ResourceContainer3D : MonoBehaviour
     [SerializeField] float _resourceFlyDuration;
     [SerializeField] float _speedBoostPerTick;
     [SerializeField] YAxisLayoutGroup3D layout;
+    [SerializeField] private ResourceCollector _collector;
     private Vector3 CalculateResourcePosition(Resource3D resource)
     {
         if (resources.IndexOf(resource) == 0)
@@ -26,6 +27,7 @@ public class ResourceContainer3D : MonoBehaviour
     {
         Debug.Log("Вот ресурс: " + resource);
         resources.Add(resource);
+        _collector.AddResource(1, resource.Type);
         float duration = _resourceFlyDuration;
         var tweener = resource.transform
             .DOMove(CalculateResourcePosition(resource), duration)
