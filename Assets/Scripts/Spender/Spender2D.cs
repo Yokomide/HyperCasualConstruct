@@ -1,43 +1,137 @@
+using DG.Tweening;
+using Lofelt.NiceVibrations;
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Spender2D : MonoBehaviour
+public class Spender2D : Spender
 {
-    public Spender2D()
+    private void Awake()
     {
+        if (_initializeRequrimentsOnStart)
+        {
+            UpdateRequirments(_requiredResources);
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent(out ICollector collector))
+            return;
+        _collector = collector;
+        if (_isSpendingLocked)
+            return;
+        if (_requiredResources == null)
+            return;
+        _isSpendingActive = true;
+        if (SpendAnimation)
+            collector.StartAnimation(_characterAnimationType, _animationSpeed);
+        StartSpending();
+        return;
     }
 
-    public void AddToStorage(int amount, ResourceType type)
+    private void OnTriggerExit(Collider other)
     {
-        throw new System.NotImplementedException();
+        if (!other.TryGetComponent(out ICollector collector))
+            return;
+        StopSpending();
     }
 
-    public void CheckResourceCompletion()
+    public override void StartSpending()
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(StartSpendingWithDelay());
     }
 
-    public void StartSpending()
+    private void Spend()
     {
-        throw new System.NotImplementedException();
+        if (_isSpendingLocked)
+            return;
+        if (!_isSpendingActive)
+            return;
+        int runOutResources = 0;
+        foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
+        {
+
+            if (!resourceStorage.ContainsKey(requirement.type))
+                continue;
+
+            if (resourceStorage[requirement.type] < requirement.amount && _collector.GetResourceAmount(requirement.type) >= _amountPerTick)
+            {
+                _collector.RemoveResource(_amountPerTick, requirement.type);
+                AddToStorage(_amountPerTick, requirement.type);
+            }
+            else
+            {
+                runOutResources++;
+            }
+        }
+        if (runOutResources == _requiredResources.requiredResources.Count())
+        {
+            StopSpending();
+        }
     }
 
-    public void StopSpending()
+    public override void StopSpending()
     {
-        throw new System.NotImplementedException();
+        _isSpendingActive = false;
+        if (SpendAnimation)
+        {
+            if (_collector != null)
+            {
+                _collector.EndAnimation();
+            }
+        }
+        _collector = null;
+    }
+    public override void AddToStorage(int amount, ResourceType type)
+    {
+        if (requireVisual.Count > 0)
+        {
+            Debug.Log(requireVisual[type]);
+            VisualRequireSetter visualRequireSetter = requireVisual[type].GetComponent<VisualRequireSetter>();
+            visualRequireSetter.SetValue(visualRequireSetter.Value - amount);
+        }
+        if (_fillImage != null)
+        {
+            _fillImage.fillAmount += _fillOnePercent * amount;
+        }
+        resourceStorage[type] += amount;
+        if (haptic != null)
+        {
+            HapticController.Play(haptic);
+        }
+        if (CheckResourceCompletion())
+        {
+            StopSpending();
+            _requiredResources = null;
+            ActivateEvent();
+            if (_initializeRequrimentsOnStart)
+                UpdateRequirments(_requiredResources);
+            return;
+        }
     }
 
-
-    // Start is called before the first frame update
-    void Start()
+    IEnumerator StartSpendingWithDelay()
     {
-        
+        while (_isSpendingActive && !_isSpendingLocked)
+        {
+            Spend();
+            yield return new WaitForSeconds(_spendDelay);
+        }
+        yield return null;
+    }
+    public override bool CheckResourceCompletion()
+    {
+        foreach (RequiredResourcesData.ResourceRequirement requirement in _requiredResources.requiredResources)
+        {
+            if (resourceStorage[requirement.type] != requirement.amount)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

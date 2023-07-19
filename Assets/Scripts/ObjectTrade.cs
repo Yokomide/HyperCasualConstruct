@@ -3,6 +3,7 @@ using Lofelt.NiceVibrations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 public class ObjectTrade : MonoBehaviour
 {
@@ -86,6 +87,7 @@ public class ObjectTrade : MonoBehaviour
     {
         if (!other.TryGetComponent(out ICollector collector))
             return;
+        StopTrade();
         _collector = null;
         _isCollectorIn = false;
     }
@@ -122,6 +124,11 @@ public class ObjectTrade : MonoBehaviour
         //_fillOnePercent = 1 / _fillMaxAmount;
         //_fillMaxAmount = 0;
 
+    }
+    private void StopTrade()
+    {
+        if (TradeAnimation)
+            _collector.EndAnimation();
     }
     IEnumerator PlaceTradeItem()
     {
@@ -162,6 +169,11 @@ public class ObjectTrade : MonoBehaviour
                 }
 
 
+            }
+            if(containerRequiredResources.Count <= 0)
+            {
+                StopTrade();
+                yield break;
             }
             for (int i = 0; i < containerRequiredResources.Count; i++)
             {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-internal interface ICollector
+public interface ICollector
 {
     public int GetResourceAmount(ResourceType resourceType);
     public void AddResource(int amount, ResourceType resource);

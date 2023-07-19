@@ -9,7 +9,7 @@ using UnityEngine;
 public class UpgradeTarget : MonoBehaviour
 {
     [SerializeField] bool _shouldDisappear;
-    [SerializeField] private ResourceSpender _resourceSpender;
+    [SerializeField] private Spender _resourceSpender;
     [SerializeField] private MeshFilter _meshFilter;
     [SerializeField] private List<GameObject> UpgradedObjects = new List<GameObject>();
     private TweenAnimationContoller _tweenAnimationContoller;

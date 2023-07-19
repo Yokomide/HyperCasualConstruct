@@ -13,24 +13,12 @@ public class Spender3D : Spender
     [Space(10)]
 
     [Header("====Spend Settings====")]
-    [SerializeField] private bool _initializeRequrimentsOnStart;
     [SerializeField] private float _spendJumpPower;
-
-    [Header("====Visual====")]
-    [OnValueChanged("ChangeFillColor")]
-    [SerializeField] private Color _fillColor;
-    [SerializeField] private Image _fillImage;
-
-    private ICollector _collector;
 
     private List<Resource3D> containerRequiredResources = new List<Resource3D>();
 
     private ResourceContainer3D _container3D;
     public ResourceContainer3D Containter3D => _container3D;
-    private float _fillMaxAmount;
-    private float _fillOnePercent;
-
-    private bool _isSpendingActive;
 
     private Coroutine spending3DCoroutine;
     private void Awake()
@@ -65,32 +53,10 @@ public class Spender3D : Spender
         StopSpending();
     }
 
-    public override void UpdateRequirments(RequiredResourcesData requiredResourcesData)
-    {
-        ClearDictionaries();
-        _requiredResources = requiredResourcesData;
-        foreach (RequiredResourcesData.ResourceRequirement requirement in requiredResourcesData.requiredResources)
-        {
-            resourceStorage.Add(requirement.type, 0);
-            
-            _fillMaxAmount += requirement.amount;
-
-            if (_UIHolder != null & _UIPrefab != null)
-            {
-                var requirementUI = Instantiate(_UIPrefab, _UIHolder);
-                requirementUI.GetComponent<VisualRequireSetter>().Initialize(requirement.type, requirement.amount);
-                requireVisual.Add(requirement.type, requirementUI);
-            }
-        }
-        _fillOnePercent = 1 / _fillMaxAmount;
-        _fillMaxAmount = 0;
-
-    }
-
 
     public override void StartSpending()
     {
-        spending3DCoroutine = StartCoroutine(StartSpending3D());
+        spending3DCoroutine = StartCoroutine(Spend());
     }
 
     public override void StopSpending()
@@ -112,7 +78,7 @@ public class Spender3D : Spender
         _collector = null;
     }
 
-    IEnumerator StartSpending3D()
+    IEnumerator Spend()
     {
         if (_isSpendingLocked)
             yield break;
@@ -221,29 +187,5 @@ public class Spender3D : Spender
             }
         }
         return true;
-    }
-    private void ChangeFillColor()
-    {
-        _fillImage.color = _fillColor;
-    }
-    public override void ClearDictionaries()
-    {
-        resourceStorage.Clear();
-        if (requireVisual.Count > 0)
-        {
-            foreach (GameObject visualRequire in requireVisual.Values)
-            {
-                Destroy(visualRequire);
-            }
-            requireVisual.Clear();
-        }
-    }
-    public void LockSpend()
-    {
-        _isSpendingLocked = true;
-    }
-    public void UnlockSpend()
-    {
-        _isSpendingLocked = false;
     }
 }

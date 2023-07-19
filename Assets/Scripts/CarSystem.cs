@@ -13,8 +13,6 @@ public class CarSystem : MonoBehaviour
 
     [SerializeField] private Spender _resourceSpender;
 
-    private GameObject _currentCar;
-
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _orderPoint;
     [SerializeField] private Transform _endPoint;
@@ -24,6 +22,7 @@ public class CarSystem : MonoBehaviour
     [SerializeField] private int _difficulty;
 
     private Vector3 _startScale;
+    private GameObject _currentCar;
 
     [Serializable]
     public class Orders

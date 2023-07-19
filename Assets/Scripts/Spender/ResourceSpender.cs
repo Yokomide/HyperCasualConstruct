@@ -18,7 +18,6 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     [Space(10)]
 
     [Header("====Spend Settings====")]
-    [SerializeField] private bool _initializeRequrimentsOnStart;
     [SerializeField] private float _spendDelay;
     [SerializeField] private float _spendSpeed;
     [SerializeField] private float _spendCancelSpeed;
@@ -70,10 +69,10 @@ public class ResourceSpender : MonoBehaviour, IEventActivator
     private Coroutine spending3DCoroutine;
     private void Awake()
     {
-        if(_initializeRequrimentsOnStart)
-        {
-            UpdateRequirments(_requiredResources);
-        }
+      //  if(_initializeRequrimentsOnStart)
+       // {
+     //       UpdateRequirments(_requiredResources);
+     //   }
     }
     private void OnTriggerEnter(Collider other)
     {
