@@ -91,8 +91,10 @@ public class SimpleResourceFarmer : MonoBehaviour
     {
         _isFarmingActive = false;
         _farmSequence.Kill();
-
+        if (_fillImage != null)
+        {
             _fillImage.DOFillAmount(0, _farmCancelSpeed);
+        }
 
         if (CollectAnimation)
             collector.EndAnimation();
@@ -157,6 +159,9 @@ public class SimpleResourceFarmer : MonoBehaviour
     }
     private void ResetFill()
     {
-        _fillImage.fillAmount = 0;
+        if (_fillImage != null)
+        {
+            _fillImage.fillAmount = 0;
+        }
     }
 }

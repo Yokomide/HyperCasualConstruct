@@ -117,7 +117,6 @@ public class AnimationResourceFarmer : MonoBehaviour
             if (_resourceAmount >= _amountPerTick)
             {
                 _resourceAmount -= _amountPerTick;
-                _collector.AddResource(_amountPerTick, _resourceType);
 
                 if (UseResourceModel && _interactor.TryGetComponent(out ResourceContainer3D resourceContainer3D))
                     SpawnResourceModel(resourceContainer3D);
@@ -132,7 +131,7 @@ public class AnimationResourceFarmer : MonoBehaviour
         }
         else
         {
-            _collector.AddResource(_amountPerTick, _resourceType);
+           // _collector.AddResource(_amountPerTick, _resourceType);
 
             if (UseResourceModel && _interactor.TryGetComponent(out ResourceContainer3D resourceContainer3D))
                 SpawnResourceModel(resourceContainer3D);
@@ -145,6 +144,7 @@ public class AnimationResourceFarmer : MonoBehaviour
     private void SpawnResourceVisual()
     {
         var resourceVisual = Instantiate(_resourceVisual, gameObject.transform);
+        _collector.AddResource(_amountPerTick, _resourceType);
 
         _resourceSequence = DOTween.Sequence();
         _resourceSequence.Append(resourceVisual.transform.DOMove(new Vector3(resourceVisual.gameObject.transform.position.x, resourceVisual.gameObject.transform.position.y + 2, resourceVisual.gameObject.transform.position.z), 0.4f))
@@ -155,7 +155,25 @@ public class AnimationResourceFarmer : MonoBehaviour
 
     private void SpawnResourceModel(ResourceContainer3D resourceContainer3D)
     {
+<<<<<<< Updated upstream
         var resource3D = Instantiate(_resourceModel, _target.position, Quaternion.identity);
+=======
+        GameObject resource3D = Instantiate(_resourceModel, _target.position, Quaternion.identity);
+        if (haptic != null)
+        {
+            if (HapticController.hapticsEnabled)
+            {
+                HapticController.Play(haptic);
+
+            }
+            else
+            {
+                HapticController.fallbackPreset = HapticPatterns.PresetType.Selection;
+            }
+
+        }
+
+>>>>>>> Stashed changes
         resource3D.transform.localScale = new Vector3(0, 0, 0);
         _resourceSequence = DOTween.Sequence();
         _resourceSequence.Append(resource3D.transform.DOMove(new Vector3(resource3D.gameObject.transform.position.x, resource3D.gameObject.transform.position.y + 3, resource3D.gameObject.transform.position.z), 0.3f))

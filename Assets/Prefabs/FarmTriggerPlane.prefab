@@ -199,7 +199,15 @@ MonoBehaviour:
   _capacity: 0
   _resourceAmount: 0
   CollectAnimation: 0
+  _characterAnimationType: 0
+  _fillColor: {r: 0, g: 0, b: 0, a: 0}
   _fillImage: {fileID: 7475589819067185925}
+  UseResourceModel: 0
+  _resourceModel: {fileID: 0}
+  ResourceToUIAnim: 0
+  _resourceVisual: {fileID: 0}
+  _uiResourceTransform: {fileID: 0}
+  _uiNewTransform: {fileID: 0}
 --- !u!1 &6334222168674774909
 GameObject:
   m_ObjectHideFlags: 0

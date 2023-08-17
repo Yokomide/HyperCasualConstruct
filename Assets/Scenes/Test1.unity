@@ -37,8 +37,13 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
+<<<<<<< Updated upstream
   m_Sun: {fileID: 1802667317}
   m_IndirectSpecularColor: {r: 0.15884069, g: 0.517407, b: 1.0393059, a: 1}
+=======
+  m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+>>>>>>> Stashed changes
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -304,18 +309,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 154567150}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &154567152 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5516789834359597825, guid: 5cb0a07f11b38b5418d544928fde1c8c,
-    type: 3}
-  m_PrefabInstance: {fileID: 154567150}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f22a5606ae9df384fa88454a2aa33d04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &195310966
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,7 +568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shouldDisappear: 0
-  _resourceSpender: {fileID: 154567152}
+  _resourceSpender: {fileID: 0}
   _meshFilter: {fileID: 0}
   UpgradedObjects:
   - {fileID: 546162535}
@@ -599,24 +592,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _settings:
-  - _animationType: 2
+  - animationType: 0
+    _duration: 0.4
     _targetPosition: {fileID: 0}
     _scaleTarget: {x: 2, y: 2, z: 2}
-    _duration: 0.4
     _jumpForce: 0
     _numJumps: 0
-  - _animationType: 2
+    _storeAnimation: 0
+  - animationType: 0
+    _duration: 0.4
     _targetPosition: {fileID: 0}
     _scaleTarget: {x: 2, y: 2, z: 2}
-    _duration: 0.4
     _jumpForce: 0
     _numJumps: 0
-  - _animationType: 2
+    _storeAnimation: 0
+  - animationType: 0
+    _duration: 0.4
     _targetPosition: {fileID: 0}
     _scaleTarget: {x: 2, y: 2, z: 2}
-    _duration: 0.4
     _jumpForce: 0
     _numJumps: 0
+    _storeAnimation: 0
 --- !u!1 &280797159
 GameObject:
   m_ObjectHideFlags: 0
@@ -1537,7 +1533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shouldDisappear: 0
-  _resourceSpender: {fileID: 154567152}
+  _resourceSpender: {fileID: 0}
   _meshFilter: {fileID: 0}
   UpgradedObjects:
   - {fileID: 1303538918}
@@ -1557,12 +1553,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _settings:
-  - _animationType: 0
+  - animationType: 0
+    _duration: 0.5
     _targetPosition: {fileID: 881579562}
     _scaleTarget: {x: 1, y: 1, z: 1}
-    _duration: 0.5
     _jumpForce: 0
     _numJumps: 0
+    _storeAnimation: 0
 --- !u!4 &629363877
 Transform:
   m_ObjectHideFlags: 0

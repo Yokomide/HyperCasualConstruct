@@ -12,7 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00883de10da5e944dad05433298431d1, type: 3}
   m_Name: PlayerResourceStorage
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
   _goldAmount: 0
   _woodAmount: 0
   _blueDiamondAmount: 2
   _redDiamondAmount: 0
+=======
+  _goldAmount: 50
+  _blueDiamondAmount: 0
+  _redDiamondAmount: 0
+  _burgerAmount: 0
+  _bunAmount: 0
+  _cutletAmount: 0
+  _rawCutletAmount: 0
+  _paperAmount: 0
+  _fleshAmount: 0
+  _boneAmount: 0
+  _essenceAmount: 0
+>>>>>>> Stashed changes

@@ -266,7 +266,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f22a5606ae9df384fa88454a2aa33d04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
   _resourceType: 0
+=======
+>>>>>>> Stashed changes
   _requiredResources: {fileID: 0}
   _spendDelay: 1
   _spendSpeed: 1
@@ -284,6 +287,9 @@ MonoBehaviour:
   _UIHolder: {fileID: 1846237097482590037}
   _UIPrefab: {fileID: 9222270721031971619, guid: 92310a4ccc208eb469087b08e8a050b1,
     type: 3}
+  resourceTarget: {fileID: 0}
+  haptic: {fileID: 0}
+  startResourceTargetScale: {x: 0, y: 0, z: 0}
 --- !u!1001 &7252017902965479504
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -39,6 +39,9 @@ public class ResourceCollector : MonoBehaviour, ICollector
             case CharacterAnimationType.Mine:
                 _animator.SetBool("isMining", true);
                 break;
+            case CharacterAnimationType.SpellCast:
+                _animator.SetBool("isCasting", true);
+                break;
         }
     }
     public void StartAnimation(CharacterAnimationType characterAnimationType, float speed)
@@ -62,6 +65,8 @@ public class ResourceCollector : MonoBehaviour, ICollector
         _animator.SetBool("isDancing_1", false);
         _animator.SetBool("isDancing_2", false);
         _animator.SetBool("isMining", false);
+        _animator.SetBool("isCasting", false);
+
         _animator.SetFloat("Speed", 1);
 
     }

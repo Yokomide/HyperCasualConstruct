@@ -325,3 +325,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: eb0209f905ddca94e992363c16cc3b1d, type: 2}
   - {fileID: 11400000, guid: f84b77af397b3e94c86c47c304df11c5, type: 2}
   - {fileID: 11400000, guid: c45af95e2a565b3408c2008651db8d4c, type: 2}
+<<<<<<< Updated upstream:Assets/ResourceTileHolder.prefab
+=======
+  - {fileID: 11400000, guid: 28bb3f090744b19449cbcad549404a5d, type: 2}
+  - {fileID: 11400000, guid: 1b3b4561ce92e984bb0146d4f7238233, type: 2}
+  - {fileID: 11400000, guid: aff15d7efb169ef41830b7ad51f124ff, type: 2}
+  - {fileID: 11400000, guid: 1813f7d0f9a67b04ca86108177a1bbb2, type: 2}
+  - {fileID: 11400000, guid: edea539575e1d924a87a8b0b8de9304b, type: 2}
+  - {fileID: 11400000, guid: 3a93dd5e5bc93f84bbf77946c539b5b0, type: 2}
+  - {fileID: 11400000, guid: 82261f5644fe93e4c82b35768df55238, type: 2}
+>>>>>>> Stashed changes:Assets/Prefabs/ResourceTileHolder.prefab
